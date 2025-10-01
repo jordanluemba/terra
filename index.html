@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERRA Satellite - Mission Control</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AOS.js CDN -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .orbitron {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        .glow-green {
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+        
+        .glow-red {
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+        
+        .cockpit-panel {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #00ffff;
+            position: relative;
+        }
+        
+        .cockpit-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.1) 50%, transparent 70%);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .hologram-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 0, 0.1));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        
+        .hologram-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .hex-tile {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: linear-gradient(135deg, #0f3460, #16537e);
+        }
+        
+        .countdown-digit {
+            font-size: 6rem;
+            text-shadow: 0 0 30px #00ffff;
+        }
+        
+        @media (min-width: 640px) {
+            .countdown-digit {
+                font-size: 7rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .countdown-digit {
+                font-size: 8rem;
+            }
+        }
+        
+        .star-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        .glitch {
+            animation: glitch-animation 2s infinite;
+        }
+        
+        @keyframes glitch-animation {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .container {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (min-width: 640px) {
+            .container {
+                max-width: 640px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1024px;
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 1280px;
+            }
+        }
+        
+        @media (min-width: 1536px) {
+            .container {
+                max-width: 1536px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-cyan-500/30">
+        <div class="container mx-auto px-8 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center">
+                        <span class="text-lg font-bold orbitron">T</span>
+                    </div>
+                    <span class="text-xl font-bold orbitron text-cyan-400">TERRA</span>
+                </div>
+                
+                <!-- Navigation Menu -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="#welcome" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HOME</a>
+                    <a href="#crisis" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">CRISIS</a>
+                    <a href="#launch" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LAUNCH</a>
+                    <a href="#orbit" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ORBIT</a>
+                    <a href="#instruments" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">INSTRUMENTS</a>
+                    <a href="#environmental-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ENVIRONMENT</a>
+                    <a href="#human-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HUMANITY</a>
+                    <a href="#discoveries" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">DISCOVERIES</a>
+                    <a href="#legacy" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LEGACY</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden mobile-menu-btn text-cyan-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="mobile-menu hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#welcome" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HOME</a>
+                    <a href="#crisis" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">CRISIS</a>
+                    <a href="#launch" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LAUNCH</a>
+                    <a href="#orbit" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ORBIT</a>
+                    <a href="#instruments" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">INSTRUMENTS</a>
+                    <a href="#environmental-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ENVIRONMENT</a>
+                    <a href="#human-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HUMANITY</a>
+                    <a href="#discoveries" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">DISCOVERIES</a>
+                    <a href="#legacy" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LEGACY</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Star Field Background -->
+    <div class="star-field"></div>
+    
+    <!-- SECTION 1 - SPACESHIP ENTRY / WELCOME -->
+    <section id="welcome" class="h-screen relative overflow-hidden flex items-center justify-center">
+        <!-- Background Video -->
+        <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover opacity-70">
+            <source src="https://www.nasa.gov/sites/default/files/thumbnails/image/iss_earth_timelapse.mp4" type="video/mp4">
+        </video>
+        
+        <!-- YouTube Embed as backup -->
+        <iframe class="absolute inset-0 w-full h-full opacity-50" 
+                src="https://youtube.com/shorts/hMFHGgWJB1U?si=_49dfq9jBc7NiyuK" 
+                frameborder="0" allowfullscreen></iframe>
+        
+        <!-- Cockpit Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/80"></div>
+        
+        <!-- Cockpit Lights -->
+        <div class="absolute top-10 left-10 flex space-x-4">
+            <div class="cockpit-light w-4 h-4 rounded-full bg-green-500 glow-green"></div>
+            <div class="cockpit-light w-4 h-4 rounded-full bg-blue-500 glow"></div>
+            <div class="cockpit-light w-4 h-4 rounded-full bg-red-500 glow-red"></div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="boot-text orbitron text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8 text-cyan-400">
+                TERRA
+            </h1>
+            <div class="boot-text text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 leading-relaxed max-w-4xl mx-auto">
+                <p class="mb-4 sm:mb-6">Welcome aboard the NASA Satellite TERRA.</p>
+                <p class="mb-4 sm:mb-6">I have been orbiting Earth since <span class="text-cyan-400 orbitron">1999</span>, silently watching over our planet.</p>
+                <p class="text-cyan-300">Your mission: explore my history, meet my instruments, and discover how I protect humanity.</p>
+            </div>
+            <button class="mission-btn bg-cyan-500 hover:bg-cyan-400 px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl orbitron font-bold transition-all duration-300 glow">
+                INITIALIZE MISSION
+            </button>
+        </div>
+    </section>
+    
+    <!-- SECTION 2 - WHY WAS I CREATED? -->
+    <section id="crisis" class="min-h-screen bg-gradient-to-b from-red-900/20 to-black py-16 sm:py-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-red-400" data-aos="fade-up">
+                THE CRISIS
+            </h2>
+            
+            <div class="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
+                <div class="crisis-text" data-aos="fade-right">
+                    <p class="text-xl sm:text-2xl mb-4 sm:mb-6">
+                        In the 1990s, climate change was accelerating. Forests were burning. Glaciers were melting. Pollution was rising.
+                    </p>
+                    <p class="text-xl sm:text-2xl text-red-300">
+                        But Earth had no true global eye. Scientists needed a guardian in space.
+                    </p>
+                </div>
+                
+                <div class="crisis-video relative" data-aos="fade-left">
+                    <iframe class="w-full h-60 sm:h-80 rounded-lg glow-red" 
+                            src="https://www.youtube.com/embed/ipVxxxqwBQw?autoplay=1&mute=1&loop=1&playlist=ipVxxxqwBQw" 
+                            frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 3 - THE LAUNCH (1999) -->
+    <section id="launch" class="min-h-screen bg-gradient-to-b from-orange-900/20 to-black py-16 sm:py-20 relative">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold mb-12 sm:mb-16 text-orange-400" data-aos="fade-up">
+                LAUNCH SEQUENCE
+            </h2>
+            
+            <!-- Countdown -->
+            <div class="countdown-container mb-12 sm:mb-16" data-aos="zoom-in">
+                <div class="countdown-digit orbitron text-orange-400 mb-6 sm:mb-8">
+                    <span id="countdown" class="text-6xl sm:text-7xl lg:text-8xl">5</span>
+                </div>
+                <p class="text-lg sm:text-xl lg:text-2xl mb-6 sm:mb-8">December 18, 1999 - Vandenberg Air Force Base</p>
+            </div>
+            
+            <!-- Launch Video -->
+            <div class="launch-video relative max-w-6xl mx-auto" data-aos="fade-up">
+                <iframe class="w-full h-60 sm:h-80 lg:h-96 rounded-lg glow" 
+                        src="https://www.youtube.com/embed/OnoNITE-CLc?start=60&autoplay=1&mute=1" 
+                        frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 4 - ORBIT ACTIVATION / DASHBOARD PANEL -->
+    <section id="orbit" class="min-h-screen bg-gradient-to-b from-blue-900/20 to-black py-16 sm:py-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-blue-400" data-aos="fade-up">
+                ORBITAL STATUS
+            </h2>
+            
+            <div class="cockpit-panel max-w-6xl mx-auto p-6 sm:p-8 rounded-lg" data-aos="zoom-in">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 text-center">
+                    <div class="stat-panel">
+                        <div class="stat-value text-2xl sm:text-3xl lg:text-4xl orbitron font-bold text-cyan-400 mb-2">705 km</div>
+                        <div class="stat-label text-lg sm:text-xl">Altitude Above Earth</div>
+                    </div>
+                    <div class="stat-panel">
+                        <div class="stat-value text-2xl sm:text-3xl lg:text-4xl orbitron font-bold text-green-400 mb-2">99 min</div>
+                        <div class="stat-label text-lg sm:text-xl">Orbit Revolution Time</div>
+                    </div>
+                    <div class="stat-panel sm:col-span-2 lg:col-span-1">
+                        <div class="stat-value text-2xl sm:text-3xl lg:text-4xl orbitron font-bold text-yellow-400 mb-2">25+ years</div>
+                        <div class="stat-label text-lg sm:text-xl">Active (Expected: 6 years)</div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 sm:mt-8 text-center">
+                    <div class="status-indicator w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-green-500 glow-green mx-auto mb-4 flex items-center justify-center">
+                        <span class="orbitron font-bold text-sm sm:text-base">ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 5 - MEET MY FIVE SCIENTIFIC INSTRUMENTS -->
+    <section id="instruments" class="min-h-screen bg-gradient-to-b from-purple-900/20 to-black py-16 sm:py-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-purple-400" data-aos="fade-up">
+                SCIENTIFIC INSTRUMENTS
+            </h2>
+            
+            <!-- Instrument Video -->
+            <div class="instrument-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
+                <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow" 
+                        src="https://www.youtube.com/embed/gSJeaGL_A7g?autoplay=1&mute=1" 
+                        frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <div class="instruments-grid grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 max-w-7xl mx-auto">
+                <!-- MODIS -->
+                <div class="hologram-card p-6 rounded-lg instrument-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-center mb-4">
+                        <div class="instrument-icon w-16 h-16 rounded-full bg-green-500 mx-auto mb-4 flex items-center justify-center text-2xl">
+                            👁️
+                        </div>
+                        <h3 class="text-2xl orbitron font-bold text-green-400">MODIS</h3>
+                        <p class="text-green-300">The Eyes</p>
+                    </div>
+                    <p class="mb-4">Observes forests, oceans, clouds, ice.</p>
+                    <p class="text-sm text-green-200"><strong>Impact:</strong> Tracks deforestation and wildfire spread to protect communities.</p>
+                </div>
+                
+                <!-- ASTER -->
+                <div class="hologram-card p-6 rounded-lg instrument-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-center mb-4">
+                        <div class="instrument-icon w-16 h-16 rounded-full bg-yellow-600 mx-auto mb-4 flex items-center justify-center text-2xl">
+                            🌋
+                        </div>
+                        <h3 class="text-2xl orbitron font-bold text-yellow-400">ASTER</h3>
+                        <p class="text-yellow-300">The Geologist</p>
+                    </div>
+                    <p class="mb-4">Measures ground temperature and elevation.</p>
+                    <p class="text-sm text-yellow-200"><strong>Impact:</strong> Monitors active volcanoes and helps evacuate populations safely.</p>
+                </div>
+                
+                <!-- MISR -->
+                <div class="hologram-card p-6 rounded-lg instrument-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-center mb-4">
+                        <div class="instrument-icon w-16 h-16 rounded-full bg-blue-500 mx-auto mb-4 flex items-center justify-center text-2xl">
+                            ☁️
+                        </div>
+                        <h3 class="text-2xl orbitron font-bold text-blue-400">MISR</h3>
+                        <p class="text-blue-300">The Cloud Analyst</p>
+                    </div>
+                    <p class="mb-4">Detects cloud height and movement.</p>
+                    <p class="text-sm text-blue-200"><strong>Impact:</strong> Improves storm tracking and weather prediction.</p>
+                </div>
+                
+                <!-- CERES -->
+                <div class="hologram-card p-6 rounded-lg instrument-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-center mb-4">
+                        <div class="instrument-icon w-16 h-16 rounded-full bg-yellow-500 mx-auto mb-4 flex items-center justify-center text-2xl">
+                            ☀️
+                        </div>
+                        <h3 class="text-2xl orbitron font-bold text-yellow-400">CERES</h3>
+                        <p class="text-yellow-300">The Solar Accountant</p>
+                    </div>
+                    <p class="mb-4">Measures how much sunlight Earth absorbs vs reflects.</p>
+                    <p class="text-sm text-yellow-200"><strong>Impact:</strong> Helps scientists understand heatwaves and global warming.</p>
+                </div>
+                
+                <!-- MOPITT -->
+                <div class="hologram-card p-6 rounded-lg instrument-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="text-center mb-4">
+                        <div class="instrument-icon w-16 h-16 rounded-full bg-red-500 mx-auto mb-4 flex items-center justify-center text-2xl">
+                            🏭
+                        </div>
+                        <h3 class="text-2xl orbitron font-bold text-red-400">MOPITT</h3>
+                        <p class="text-red-300">The Pollution Hunter</p>
+                    </div>
+                    <p class="mb-4">Detects carbon monoxide and toxic gases.</p>
+                    <p class="text-sm text-red-200"><strong>Impact:</strong> Reveals city pollution levels — Governments use it to enforce cleaner air policies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 6 - ENVIRONMENTAL IMPACT -->
+    <section id="environmental-impact" class="min-h-screen bg-gradient-to-b from-green-900/20 to-black py-16 sm:py-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-green-400" data-aos="fade-up">
+                ENVIRONMENTAL IMPACT
+            </h2>
+            
+            <div class="max-w-7xl mx-auto">
+                <!-- Environmental Video -->
+                <div class="environmental-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
+                    <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow-green" 
+                            src="https://www.youtube.com/embed/ZSt9tm3RoUU?autoplay=1&mute=1" 
+                            frameborder="0" allowfullscreen></iframe>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-8 sm:gap-12 mb-12 sm:mb-16">
+                    <div class="environmental-stats" data-aos="fade-right">
+                        <h3 class="text-2xl sm:text-3xl orbitron font-bold text-green-400 mb-6 sm:mb-8">Planet Monitoring</h3>
+                        <div class="space-y-4 sm:space-y-6">
+                            <div class="stat-item p-4 cockpit-panel rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-500 flex items-center justify-center text-lg sm:text-xl">🌍</div>
+                                    <div>
+                                        <div class="text-xl sm:text-2xl font-bold text-green-400">36,000 km²</div>
+                                        <div class="text-sm text-gray-300">Deforestation detected daily</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item p-4 cockpit-panel rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500 flex items-center justify-center text-lg sm:text-xl">🌊</div>
+                                    <div>
+                                        <div class="text-xl sm:text-2xl font-bold text-blue-400">±0.1°C</div>
+                                        <div class="text-sm text-gray-300">Ocean temperature precision</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item p-4 cockpit-panel rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center text-lg sm:text-xl">❄️</div>
+                                    <div>
+                                        <div class="text-xl sm:text-2xl font-bold text-cyan-400">13%</div>
+                                        <div class="text-sm text-gray-300">Arctic ice reduction/decade</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="environmental-impact-grid" data-aos="fade-left">
+                        <h3 class="text-2xl sm:text-3xl orbitron font-bold text-green-400 mb-6 sm:mb-8">Protected Ecosystems</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="impact-card hologram-card p-4 rounded-lg text-center">
+                                <div class="text-2xl sm:text-3xl mb-2">🦋</div>
+                                <div class="text-sm sm:text-lg font-bold text-green-400">Biodiversity</div>
+                                <div class="text-xs sm:text-sm text-gray-300">Habitats mapped</div>
+                            </div>
+                            
+                            <div class="impact-card hologram-card p-4 rounded-lg text-center">
+                                <div class="text-2xl sm:text-3xl mb-2">🌸</div>
+                                <div class="text-sm sm:text-lg font-bold text-pink-400">Pollination</div>
+                                <div class="text-xs sm:text-sm text-gray-300">Cycles tracked</div>
+                            </div>
+                            
+                            <div class="impact-card hologram-card p-4 rounded-lg text-center">
+                                <div class="text-2xl sm:text-3xl mb-2">🌾</div>
+                                <div class="text-sm sm:text-lg font-bold text-yellow-400">Agriculture</div>
+                                <div class="text-xs sm:text-sm text-gray-300">Yields optimized</div>
+                            </div>
+                            
+                            <div class="impact-card hologram-card p-4 rounded-lg text-center">
+                                <div class="text-2xl sm:text-3xl mb-2">🏔️</div>
+                                <div class="text-sm sm:text-lg font-bold text-blue-400">Glaciers</div>
+                                <div class="text-xs sm:text-sm text-gray-300">Melting monitored</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Environmental Alerts -->
+                <div class="environmental-alerts" data-aos="fade-up">
+                    <h3 class="text-xl sm:text-2xl orbitron font-bold text-center mb-6 sm:mb-8 text-red-400">Real-Time Environmental Alerts</h3>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="alert-card p-4 sm:p-6 rounded-lg border-2 border-red-500/50 bg-red-900/20">
+                            <div class="alert-icon text-3xl sm:text-4xl mb-4 text-center">🔥</div>
+                            <h4 class="text-lg sm:text-xl font-bold text-red-400 mb-2">Wildfires</h4>
+                            <p class="text-sm text-gray-300">Early detection of forest fires with precise location for emergency response teams.</p>
+                        </div>
+                        
+                        <div class="alert-card p-4 sm:p-6 rounded-lg border-2 border-yellow-500/50 bg-yellow-900/20">
+                            <div class="alert-icon text-3xl sm:text-4xl mb-4 text-center">🌪️</div>
+                            <h4 class="text-lg sm:text-xl font-bold text-yellow-400 mb-2">Storms</h4>
+                            <p class="text-sm text-gray-300">Hurricane and cyclone prediction with precise trajectories for evacuations.</p>
+                        </div>
+                        
+                        <div class="alert-card p-4 sm:p-6 rounded-lg border-2 border-purple-500/50 bg-purple-900/20 sm:col-span-2 lg:col-span-1">
+                            <div class="alert-icon text-3xl sm:text-4xl mb-4 text-center">🏭</div>
+                            <h4 class="text-lg sm:text-xl font-bold text-purple-400 mb-2">Pollution</h4>
+                            <p class="text-sm text-gray-300">Industrial emissions monitoring and urban air quality surveillance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 7 - HUMAN IMPACT -->
+    <section id="human-impact" class="min-h-screen bg-gradient-to-b from-blue-900/20 to-black py-16 sm:py-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-blue-400" data-aos="fade-up">
+                IMPACT ON HUMANITY
+            </h2>
+            
+            <div class="max-w-7xl mx-auto">
+                <!-- Human Impact Video -->
+                <div class="human-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
+                    <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow" 
+                            src="https://www.youtube.com/embed/yaqd5Sc_BcI?autoplay=1&mute=1" 
+                            frameborder="0" allowfullscreen></iframe>
+                </div>
+                
+                <!-- Lives Saved Counter -->
+                <div class="lives-saved text-center mb-12 sm:mb-16" data-aos="zoom-in">
+                    <div class="counter-display p-6 sm:p-8 cockpit-panel rounded-lg max-w-2xl mx-auto">
+                        <h3 class="text-xl sm:text-2xl orbitron font-bold text-cyan-400 mb-4">Estimated Lives Saved</h3>
+                        <div class="counter-number text-4xl sm:text-5xl lg:text-6xl orbitron font-black text-green-400 mb-4">
+                            <span id="lives-counter">0</span>
+                        </div>
+                        <p class="text-base sm:text-lg text-gray-300">Through early warnings and weather predictions</p>
+                    </div>
+                </div>
+                
+                <!-- Human Benefits Grid -->
+                <div class="human-benefits-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
+                    <div class="benefit-card hologram-card p-4 sm:p-6 rounded-lg" data-aos="fade-up" data-aos-delay="100">
+                        <div class="text-center mb-4">
+                            <div class="benefit-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-red-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🚨</div>
+                            <h3 class="text-lg sm:text-xl orbitron font-bold text-red-400">Disaster Alerts</h3>
+                        </div>
+                        <ul class="text-sm space-y-2 text-gray-300">
+                            <li>• Preventive evacuations</li>
+                            <li>• Cyclone prediction</li>
+                            <li>• Tsunami detection</li>
+                            <li>• Volcanic alerts</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="benefit-card hologram-card p-4 sm:p-6 rounded-lg" data-aos="fade-up" data-aos-delay="200">
+                        <div class="text-center mb-4">
+                            <div class="benefit-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🌾</div>
+                            <h3 class="text-lg sm:text-xl orbitron font-bold text-green-400">Food Security</h3>
+                        </div>
+                        <ul class="text-sm space-y-2 text-gray-300">
+                            <li>• Crop prediction</li>
+                            <li>• Irrigation optimization</li>
+                            <li>• Disease detection</li>
+                            <li>• Water resource management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="benefit-card hologram-card p-4 sm:p-6 rounded-lg" data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-center mb-4">
+                            <div class="benefit-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🏥</div>
+                            <h3 class="text-lg sm:text-xl orbitron font-bold text-blue-400">Public Health</h3>
+                        </div>
+                        <ul class="text-sm space-y-2 text-gray-300">
+                            <li>• Epidemic surveillance</li>
+                            <li>• Urban air quality</li>
+                            <li>• Allergen prediction</li>
+                            <li>• Health risk zones</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="benefit-card hologram-card p-4 sm:p-6 rounded-lg" data-aos="fade-up" data-aos-delay="400">
+                        <div class="text-center mb-4">
+                            <div class="benefit-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-yellow-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">⚡</div>
+                            <h3 class="text-lg sm:text-xl orbitron font-bold text-yellow-400">Renewable Energy</h3>
+                        </div>
+                        <ul class="text-sm space-y-2 text-gray-300">
+                            <li>• Solar optimization</li>
+                            <li>• Wind prediction</li>
+                            <li>• Geothermal sites</li>
+                            <li>• Energy efficiency</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="benefit-card hologram-card p-4 sm:p-6 rounded-lg" data-aos="fade-up" data-aos-delay="500">
+                        <div class="text-center mb-4">
+                            <div class="benefit-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-purple-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🏙️</div>
+                            <h3 class="text-lg sm:text-xl orbitron font-bold text-purple-400">Urban Planning</h3>
+                        </div>
+                        <ul class="text-sm space-y-2 text-gray-300">
+                            <li>• City development</li>
+                            <li>• Heat islands</li>
+                            <li>• Smart transport</li>
+                            <li>• Waste management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="benefit-card hologram-card p-4 sm:p-6 rounded-lg" data-aos="fade-up" data-aos-delay="600">
+                        <div class="text-center mb-4">
+                            <div class="benefit-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-cyan-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🌐</div>
+                            <h3 class="text-lg sm:text-xl orbitron font-bold text-cyan-400">Connectivity</h3>
+                        </div>
+                        <ul class="text-sm space-y-2 text-gray-300">
+                            <li>• Rural internet</li>
+                            <li>• GPS navigation</li>
+                            <li>• Emergency communications</li>
+                            <li>• Distance education</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Success Stories -->
+                <div class="success-stories" data-aos="fade-up">
+                    <h3 class="text-2xl sm:text-3xl orbitron font-bold text-center mb-6 sm:mb-8 text-cyan-400">Success Stories</h3>
+                    <div class="grid lg:grid-cols-2 gap-6 sm:gap-8">
+                        <div class="story-card p-4 sm:p-6 cockpit-panel rounded-lg">
+                            <div class="story-header flex items-center mb-4">
+                                <div class="story-icon w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-500 flex items-center justify-center text-lg sm:text-xl mr-4">🌪️</div>
+                                <div>
+                                    <h4 class="text-base sm:text-lg font-bold text-orange-400">Hurricane Katrina 2005</h4>
+                                    <p class="text-sm text-gray-400">New Orleans, United States</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-300">TERRA provided critical imagery for rescue operations, helping locate flooded areas and direct humanitarian aid to 1.8 million evacuated people.</p>
+                        </div>
+                        
+                        <div class="story-card p-4 sm:p-6 cockpit-panel rounded-lg">
+                            <div class="story-header flex items-center mb-4">
+                                <div class="story-icon w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500 flex items-center justify-center text-lg sm:text-xl mr-4">🔥</div>
+                                <div>
+                                    <h4 class="text-base sm:text-lg font-bold text-red-400">Australia Fires 2019</h4>
+                                    <p class="text-sm text-gray-400">"Black Summer"</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-300">Early detection and real-time tracking of mega-fires, coordination of evacuations and damage assessment over 18.6 million hectares burned.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 8 - DISCOVERIES / GLOBAL IMPACT DASHBOARD -->
+    <section id="discoveries" class="min-h-screen bg-gradient-to-b from-cyan-900/20 to-black py-16 sm:py-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-cyan-400" data-aos="fade-up">
+                GLOBAL IMPACT DASHBOARD
+            </h2>
+            
+            <!-- Discovery Video -->
+            <div class="discovery-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
+                <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow" 
+                        src="https://www.youtube.com/embed/zlhiP-BI_7o?autoplay=1&mute=1" 
+                        frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <div class="discoveries-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
+                <div class="discovery-tile cockpit-panel p-6 rounded-lg" data-aos="flip-left" data-aos-delay="100">
+                    <div class="text-center">
+                        <div class="discovery-icon text-4xl mb-4">🌳</div>
+                        <h3 class="text-xl orbitron font-bold mb-2 text-green-400">Amazon Rainforest</h3>
+                        <p class="text-sm">Loss detected and tracked in real-time</p>
+                    </div>
+                </div>
+                
+                <div class="discovery-tile cockpit-panel p-6 rounded-lg" data-aos="flip-left" data-aos-delay="200">
+                    <div class="text-center">
+                        <div class="discovery-icon text-4xl mb-4">🔥</div>
+                        <h3 class="text-xl orbitron font-bold mb-2 text-orange-400">Australian Mega Fires</h3>
+                        <p class="text-sm">2003 fires captured in real-time</p>
+                    </div>
+                </div>
+                
+                <div class="discovery-tile cockpit-panel p-6 rounded-lg" data-aos="flip-left" data-aos-delay="300">
+                    <div class="text-center">
+                        <div class="discovery-icon text-4xl mb-4">☁️</div>
+                        <h3 class="text-xl orbitron font-bold mb-2 text-gray-400">Beijing Pollution</h3>
+                        <p class="text-sm">Daily tracking in megacities worldwide</p>
+                    </div>
+                </div>
+                
+                <div class="discovery-tile cockpit-panel p-6 rounded-lg" data-aos="flip-right" data-aos-delay="400">
+                    <div class="text-center">
+                        <div class="discovery-icon text-4xl mb-4">🌊</div>
+                        <h3 class="text-xl orbitron font-bold mb-2 text-blue-400">Ocean Temperature</h3>
+                        <p class="text-sm">Coral reef bleaching prediction</p>
+                    </div>
+                </div>
+                
+                <div class="discovery-tile cockpit-panel p-6 rounded-lg" data-aos="flip-right" data-aos-delay="500">
+                    <div class="text-center">
+                        <div class="discovery-icon text-4xl mb-4">❄️</div>
+                        <h3 class="text-xl orbitron font-bold mb-2 text-cyan-400">Arctic Ice</h3>
+                        <p class="text-sm">Sea ice extent monitoring</p>
+                    </div>
+                </div>
+                
+                <div class="discovery-tile cockpit-panel p-6 rounded-lg" data-aos="flip-right" data-aos-delay="600">
+                    <div class="text-center">
+                        <div class="discovery-icon text-4xl mb-4">🌪️</div>
+                        <h3 class="text-xl orbitron font-bold mb-2 text-purple-400">Hurricane Tracking</h3>
+                        <p class="text-sm">Storm prediction and path analysis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 9 - TODAY & BEYOND -->
+    <section id="legacy" class="min-h-screen bg-gradient-to-b from-green-900/20 to-black py-16 sm:py-20 relative">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold mb-12 sm:mb-16 text-green-400" data-aos="fade-up">
+                MISSION CONTINUES
+            </h2>
+            
+            <div class="max-w-6xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                <p class="text-2xl sm:text-3xl mb-6 sm:mb-8">
+                    I was designed to last <span class="text-yellow-400 orbitron">6 years</span>.
+                </p>
+                <p class="text-2xl sm:text-3xl mb-6 sm:mb-8">
+                    I have been active for <span class="text-green-400 orbitron">25+ years</span>.
+                </p>
+                <p class="text-xl sm:text-2xl text-gray-300 mb-10 sm:mb-12">
+                    Still watching. Still protecting.
+                </p>
+                
+                <div class="call-to-action mb-12 sm:mb-16">
+                    <p class="text-xl sm:text-2xl mb-6 sm:mb-8 text-cyan-300">
+                        If a satellite can protect Earth from space...
+                    </p>
+                    <p class="text-2xl sm:text-3xl font-bold text-white">
+                        What can <span class="text-cyan-400">you</span> do on the ground?
+                    </p>
+                </div>
+                
+                <div class="action-buttons flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
+                    <button class="bg-cyan-500 hover:bg-cyan-400 px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl orbitron font-bold transition-all duration-300 glow">
+                        Watch Live TERRA Data
+                    </button>
+                    <button class="bg-green-500 hover:bg-green-400 px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl orbitron font-bold transition-all duration-300 glow-green">
+                        Join the Mission: Protect Earth
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Scripts -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            easing: 'ease-out-cubic',
+        });
+        
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Create star field
+        function createStarField() {
+            const starField = document.querySelector('.star-field');
+            const numStars = 100;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starField.appendChild(star);
+            }
+        }
+        
+        // Cockpit lights animation
+        function animateCockpitLights() {
+            const lights = document.querySelectorAll('.cockpit-light');
+            
+            lights.forEach((light, index) => {
+                gsap.to(light, {
+                    opacity: 0.3,
+                    duration: 0.5,
+                    repeat: -1,
+                    yoyo: true,
+                    delay: index * 0.2,
+                    ease: "power2.inOut"
+                });
+            });
+        }
+        
+        // Boot-up text animation
+        function animateBootText() {
+            const bootTexts = document.querySelectorAll('.boot-text');
+            
+            bootTexts.forEach((text, index) => {
+                gsap.fromTo(text, 
+                    { 
+                        opacity: 0, 
+                        y: 20,
+                        filter: "blur(5px)"
+                    },
+                    { 
+                        opacity: 1, 
+                        y: 0,
+                        filter: "blur(0px)",
+                        duration: 1,
+                        delay: index * 0.5,
+                        ease: "power2.out"
+                    }
+                );
+            });
+        }
+        
+        // Mission button animation
+        function animateMissionButton() {
+            const btn = document.querySelector('.mission-btn');
+            
+            gsap.to(btn, {
+                scale: 1.05,
+                duration: 2,
+                repeat: -1,
+                yoyo: true,
+                ease: "power2.inOut"
+            });
+            
+            btn.addEventListener('click', () => {
+                gsap.to(window, {duration: 2, scrollTo: "#crisis"});
+            });
+        }
+        
+        // Countdown animation
+        function animateCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            let count = 5;
+            
+            const countdown = setInterval(() => {
+                countdownElement.textContent = count;
+                gsap.fromTo(countdownElement, 
+                    { scale: 1.5, opacity: 0 },
+                    { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+                );
+                
+                count--;
+                
+                if (count < 0) {
+                    clearInterval(countdown);
+                    countdownElement.textContent = "IGNITION";
+                    gsap.to(countdownElement, {
+                        color: "#ff6b35",
+                        scale: 1.2,
+                        duration: 0.5
+                    });
+                }
+            }, 1000);
+        }
+        
+        // Stats animation
+        function animateStats() {
+            const statValues = document.querySelectorAll('.stat-value');
+            
+            statValues.forEach(stat => {
+                gsap.to(stat, {
+                    textShadow: "0 0 20px currentColor",
+                    duration: 2,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "power2.inOut"
+                });
+            });
+        }
+        
+        // Instrument cards animation
+        function animateInstrumentCards() {
+            const cards = document.querySelectorAll('.instrument-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        scale: 1.05,
+                        rotationY: 5,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        scale: 1,
+                        rotationY: 0,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+            });
+        }
+        
+        // Discovery tiles animation
+        function animateDiscoveryTiles() {
+            const tiles = document.querySelectorAll('.discovery-tile');
+            
+            tiles.forEach(tile => {
+                tile.addEventListener('mouseenter', () => {
+                    gsap.to(tile, {
+                        scale: 1.1,
+                        duration: 0.3,
+                        ease: "back.out(1.7)"
+                    });
+                });
+                
+                tile.addEventListener('mouseleave', () => {
+                    gsap.to(tile, {
+                        scale: 1,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+            });
+        }
+        
+        // Parallax effect for sections
+        function createParallaxEffect() {
+            gsap.utils.toArray('section').forEach(section => {
+                gsap.to(section, {
+                    yPercent: -50,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+            });
+        }
+        
+        // Crisis video glitch effect
+        function animateCrisisVideo() {
+            const video = document.querySelector('.crisis-video');
+            
+            ScrollTrigger.create({
+                trigger: video,
+                start: "top center",
+                onEnter: () => {
+                    gsap.to(video, {
+                        scale: 1.1,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to(video, {
+                        className: "+=glitch",
+                        duration: 0.1,
+                        repeat: 3,
+                        yoyo: true
+                    });
+                }
+            });
+        }
+        
+        // Navigation functionality
+        function initializeNavigation() {
+            // Mobile menu toggle
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Smooth scrolling for navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(link.getAttribute('href'));
+                    
+                    gsap.to(window, {
+                        duration: 2,
+                        scrollTo: {
+                            y: target,
+                            offsetY: 80
+                        },
+                        ease: "power2.inOut"
+                    });
+                    
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+            
+            // Active section highlighting
+            ScrollTrigger.batch('section', {
+                onEnter: (elements) => {
+                    elements.forEach(section => {
+                        const id = section.getAttribute('id');
+                        const navLink = document.querySelector(`a[href="#${id}"]`);
+                        
+                        // Remove active class from all links
+                        navLinks.forEach(link => link.classList.remove('text-cyan-400', 'text-white'));
+                        navLinks.forEach(link => link.classList.add('text-gray-300'));
+                        
+                        // Add active class to current link
+                        if (navLink) {
+                            navLink.classList.remove('text-gray-300');
+                            navLink.classList.add('text-cyan-400');
+                        }
+                    });
+                },
+                start: "top center",
+                end: "bottom center"
+            });
+        }
+        
+        // Lives saved counter animation
+        function animateLivesCounter() {
+            const counter = document.getElementById('lives-counter');
+            const targetNumber = 847352; // Estimated lives saved
+            
+            ScrollTrigger.create({
+                trigger: "#lives-counter",
+                start: "top center",
+                onEnter: () => {
+                    gsap.to({value: 0}, {
+                        value: targetNumber,
+                        duration: 3,
+                        ease: "power2.out",
+                        onUpdate: function() {
+                            counter.textContent = Math.floor(this.targets()[0].value).toLocaleString();
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Environmental stats animation
+        function animateEnvironmentalStats() {
+            const statItems = document.querySelectorAll('.stat-item');
+            
+            statItems.forEach((item, index) => {
+                item.addEventListener('mouseenter', () => {
+                    gsap.to(item, {
+                        scale: 1.05,
+                        duration: 0.3,
+                        ease: "back.out(1.7)"
+                    });
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    gsap.to(item, {
+                        scale: 1,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+            });
+        }
+        
+        // Benefit cards animation
+        function animateBenefitCards() {
+            const benefitCards = document.querySelectorAll('.benefit-card');
+            
+            benefitCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        scale: 1.05,
+                        rotationY: 5,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        scale: 1,
+                        rotationY: 0,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+            });
+        }
+        
+        // Alert cards pulsing animation
+        function animateAlertCards() {
+            const alertCards = document.querySelectorAll('.alert-card');
+            
+            alertCards.forEach((card, index) => {
+                gsap.to(card, {
+                    boxShadow: "0 0 30px rgba(255, 255, 255, 0.3)",
+                    duration: 2,
+                    repeat: -1,
+                    yoyo: true,
+                    delay: index * 0.5,
+                    ease: "power2.inOut"
+                });
+            });
+        }
+        
+        // Success stories animation
+        function animateSuccessStories() {
+            const storyCards = document.querySelectorAll('.story-card');
+            
+            storyCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        scale: 1.02,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        scale: 1,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+            });
+        }
+        
+        // Initialize all animations
+        document.addEventListener('DOMContentLoaded', () => {
+            createStarField();
+            animateCockpitLights();
+            animateBootText();
+            animateMissionButton();
+            animateStats();
+            animateInstrumentCards();
+            animateDiscoveryTiles();
+            createParallaxEffect();
+            animateCrisisVideo();
+            initializeNavigation();
+            animateLivesCounter();
+            animateEnvironmentalStats();
+            animateBenefitCards();
+            animateAlertCards();
+            animateSuccessStories();
+            
+            // Trigger countdown when launch section is visible
+            ScrollTrigger.create({
+                trigger: "#launch",
+                start: "top center",
+                onEnter: animateCountdown
+            });
+        });
+    </script>
+</body>
+</html>
