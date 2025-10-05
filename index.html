@@ -138,39 +138,143 @@
             100% { transform: translate(0); }
         }
         
+        /* Enhanced Responsive Utilities */
+        .responsive-text {
+            font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+        }
+        
+        .responsive-heading {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+        }
+        
+        .responsive-large-heading {
+            font-size: clamp(2rem, 8vw, 5rem);
+        }
+        
+        /* Mobile-first responsive grid */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        @media (min-width: 640px) {
+            .responsive-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .responsive-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .responsive-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Enhanced container system */
         .container {
             width: 100%;
             margin-left: auto;
             margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
         
         @media (min-width: 640px) {
             .container {
-                max-width: 640px;
+                max-width: 100%;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
             }
         }
         
         @media (min-width: 768px) {
             .container {
-                max-width: 768px;
+                max-width: 100%;
+                padding-left: 2rem;
+                padding-right: 2rem;
             }
         }
         
         @media (min-width: 1024px) {
             .container {
-                max-width: 1024px;
+                max-width: 100%;
+                padding-left: 2.5rem;
+                padding-right: 2.5rem;
             }
         }
         
         @media (min-width: 1280px) {
             .container {
                 max-width: 1280px;
+                padding-left: 2rem;
+                padding-right: 2rem;
             }
         }
         
         @media (min-width: 1536px) {
             .container {
                 max-width: 1536px;
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+        
+        /* Responsive video containers */
+        .video-responsive {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        }
+        
+        .video-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Enhanced mobile navigation */
+        @media (max-width: 1023px) {
+            .nav-link {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Responsive spacing utilities */
+        .responsive-spacing {
+            padding: 1rem;
+        }
+        
+        @media (min-width: 640px) {
+            .responsive-spacing {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .responsive-spacing {
+                padding: 2rem;
+            }
+        }
+        
+        /* Progress bars responsive */
+        .progress-bar {
+            height: 0.375rem;
+        }
+        
+        @media (min-width: 640px) {
+            .progress-bar {
+                height: 0.5rem;
             }
         }
     </style>
@@ -178,7 +282,7 @@
 <body class="bg-black text-white">
     <!-- Navigation Header -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-cyan-500/30">
-        <div class="container mx-auto px-8 py-4">
+        <div class="container mx-auto py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
@@ -189,38 +293,43 @@
                 </div>
                 
                 <!-- Navigation Menu -->
-                <div class="hidden md:flex space-x-6">
-                    <a href="#welcome" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HOME</a>
-                    <a href="#crisis" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">CRISIS</a>
-                    <a href="#launch" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LAUNCH</a>
-                    <a href="#orbit" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ORBIT</a>
-                    <a href="#instruments" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">INSTRUMENTS</a>
-                    <a href="#environmental-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ENVIRONMENT</a>
-                    <a href="#human-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HUMANITY</a>
-                    <a href="#discoveries" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">DISCOVERIES</a>
-                    <a href="#legacy" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LEGACY</a>
+                <div class="hidden md:flex space-x-4 lg:space-x-6">
+                    <a href="#welcome" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HOME</a>
+                    <a href="#crisis" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">CRISIS</a>
+                    <a href="#launch" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LAUNCH</a>
+                    <a href="#orbit" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ORBIT</a>
+                    <a href="#instruments" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">INSTRUMENTS</a>
+                    <a href="#environmental-impact" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ENVIRONMENT</a>
+                    <a href="#human-impact" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HUMANITY</a>
+                    <a href="#sdg13" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">SDG 13</a>
+                    <a href="#discoveries" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">DISCOVERIES</a>
+                    <a href="#legacy" class="nav-link text-xs sm:text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LEGACY</a>
                 </div>
                 
                 <!-- Mobile Menu Button -->
-                <button class="md:hidden mobile-menu-btn text-cyan-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="md:hidden mobile-menu-btn text-cyan-400 relative z-50">
+                    <svg class="hamburger-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <svg class="close-icon w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             
             <!-- Mobile Menu -->
-            <div class="mobile-menu hidden md:hidden mt-4 pb-4">
-                <div class="flex flex-col space-y-3">
-                    <a href="#welcome" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HOME</a>
-                    <a href="#crisis" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">CRISIS</a>
-                    <a href="#launch" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LAUNCH</a>
-                    <a href="#orbit" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ORBIT</a>
-                    <a href="#instruments" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">INSTRUMENTS</a>
-                    <a href="#environmental-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">ENVIRONMENT</a>
-                    <a href="#human-impact" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">HUMANITY</a>
-                    <a href="#discoveries" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">DISCOVERIES</a>
-                    <a href="#legacy" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors duration-300">LEGACY</a>
+            <div class="mobile-menu hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/95 backdrop-blur-sm z-40">
+                <div class="flex flex-col items-center justify-center h-full space-y-6 px-6">
+                    <a href="#welcome" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">HOME</a>
+                    <a href="#crisis" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">CRISIS</a>
+                    <a href="#launch" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">LAUNCH</a>
+                    <a href="#orbit" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">ORBIT</a>
+                    <a href="#instruments" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">INSTRUMENTS</a>
+                    <a href="#environmental-impact" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">ENVIRONMENT</a>
+                    <a href="#human-impact" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">HUMANITY</a>
+                    <a href="#sdg13" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">SDG 13</a>
+                    <a href="#discoveries" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">DISCOVERIES</a>
+                    <a href="#legacy" class="mobile-nav-link text-xl font-medium text-cyan-400 hover:text-white transition-colors duration-300 orbitron">LEGACY</a>
                 </div>
             </div>
         </div>
@@ -232,14 +341,18 @@
     <!-- SECTION 1 - SPACESHIP ENTRY / WELCOME -->
     <section id="welcome" class="h-screen relative overflow-hidden flex items-center justify-center">
         <!-- Background Video -->
-        <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover opacity-70">
-            <source src="https://www.nasa.gov/sites/default/files/thumbnails/image/iss_earth_timelapse.mp4" type="video/mp4">
-        </video>
-        
-        <!-- YouTube Embed as backup -->
-        <iframe class="absolute inset-0 w-full h-full opacity-50" 
-                src="https://youtube.com/shorts/hMFHGgWJB1U?si=_49dfq9jBc7NiyuK" 
-                frameborder="0" allowfullscreen></iframe>
+        <div class="video-background absolute inset-0 w-full h-full">
+            <!-- Primary NASA Video -->
+             <br><br>
+            <iframe class="absolute inset-0 w-full h-full opacity-60" 
+                    src="https://www.youtube.com/embed/C4VHfmiwuv4?autoplay=1&mute=1&loop=1&playlist=C4VHfmiwuv4&controls=0&showinfo=0&rel=0" 
+                    frameborder="0" allowfullscreen></iframe>
+            
+            <!-- Fallback Video -->
+            <iframe class="absolute inset-0 w-full h-full opacity-50" 
+                    src="https://www.youtube.com/embed/yKJxNOkWbz8?autoplay=1&mute=1&loop=1&playlist=yKJxNOkWbz8&controls=0&showinfo=0&rel=0" 
+                    frameborder="0" allowfullscreen style="z-index: -1;"></iframe>
+        </div>
         
         <!-- Cockpit Overlay -->
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/80"></div>
@@ -252,11 +365,11 @@
         </div>
         
         <!-- Main Content -->
-        <div class="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative z-10 text-center w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="boot-text orbitron text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8 text-cyan-400">
-                TERRA
+                <br><br><br> TERRA
             </h1>
-            <div class="boot-text text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 leading-relaxed max-w-4xl mx-auto">
+            <div class="boot-text text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 leading-relaxed max-w-5xl mx-auto">
                 <p class="mb-4 sm:mb-6">Welcome aboard the NASA Satellite TERRA.</p>
                 <p class="mb-4 sm:mb-6">I have been orbiting Earth since <span class="text-cyan-400 orbitron">1999</span>, silently watching over our planet.</p>
                 <p class="text-cyan-300">Your mission: explore my history, meet my instruments, and discover how I protect humanity.</p>
@@ -269,12 +382,12 @@
     
     <!-- SECTION 2 - WHY WAS I CREATED? -->
     <section id="crisis" class="min-h-screen bg-gradient-to-b from-red-900/20 to-black py-16 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-red-400" data-aos="fade-up">
                 THE CRISIS
             </h2>
             
-            <div class="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-7xl mx-auto">
                 <div class="crisis-text" data-aos="fade-right">
                     <p class="text-xl sm:text-2xl mb-4 sm:mb-6">
                         In the 1990s, climate change was accelerating. Forests were burning. Glaciers were melting. Pollution was rising.
@@ -285,8 +398,9 @@
                 </div>
                 
                 <div class="crisis-video relative" data-aos="fade-left">
+                    <!-- Climate Change Documentary -->
                     <iframe class="w-full h-60 sm:h-80 rounded-lg glow-red" 
-                            src="https://www.youtube.com/embed/ipVxxxqwBQw?autoplay=1&mute=1&loop=1&playlist=ipVxxxqwBQw" 
+                            src="https://www.youtube.com/embed/G4H1N_yXBiA?autoplay=1&mute=1&loop=1&playlist=G4H1N_yXBiA&rel=0" 
                             frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
@@ -295,7 +409,7 @@
     
     <!-- SECTION 3 - THE LAUNCH (1999) -->
     <section id="launch" class="min-h-screen bg-gradient-to-b from-orange-900/20 to-black py-16 sm:py-20 relative">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="container mx-auto text-center">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold mb-12 sm:mb-16 text-orange-400" data-aos="fade-up">
                 LAUNCH SEQUENCE
             </h2>
@@ -309,9 +423,9 @@
             </div>
             
             <!-- Launch Video -->
-            <div class="launch-video relative max-w-6xl mx-auto" data-aos="fade-up">
+            <div class="launch-video relative max-w-7xl mx-auto" data-aos="fade-up">
                 <iframe class="w-full h-60 sm:h-80 lg:h-96 rounded-lg glow" 
-                        src="https://www.youtube.com/embed/OnoNITE-CLc?start=60&autoplay=1&mute=1" 
+                        src="https://www.youtube.com/embed/OnoNITE-CLc?autoplay=1&mute=1&loop=1&playlist=OnoNITE-CLc&rel=0" 
                         frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
@@ -319,12 +433,12 @@
     
     <!-- SECTION 4 - ORBIT ACTIVATION / DASHBOARD PANEL -->
     <section id="orbit" class="min-h-screen bg-gradient-to-b from-blue-900/20 to-black py-16 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-blue-400" data-aos="fade-up">
                 ORBITAL STATUS
             </h2>
             
-            <div class="cockpit-panel max-w-6xl mx-auto p-6 sm:p-8 rounded-lg" data-aos="zoom-in">
+            <div class="cockpit-panel max-w-7xl mx-auto p-6 sm:p-8 rounded-lg" data-aos="zoom-in">
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 text-center">
                     <div class="stat-panel">
                         <div class="stat-value text-2xl sm:text-3xl lg:text-4xl orbitron font-bold text-cyan-400 mb-2">705 km</div>
@@ -351,19 +465,19 @@
     
     <!-- SECTION 5 - MEET MY FIVE SCIENTIFIC INSTRUMENTS -->
     <section id="instruments" class="min-h-screen bg-gradient-to-b from-purple-900/20 to-black py-16 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-purple-400" data-aos="fade-up">
                 SCIENTIFIC INSTRUMENTS
             </h2>
             
             <!-- Instrument Video -->
-            <div class="instrument-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
+            <div class="instrument-video mb-12 sm:mb-16 max-w-7xl mx-auto" data-aos="fade-up">
                 <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow" 
-                        src="https://www.youtube.com/embed/gSJeaGL_A7g?autoplay=1&mute=1" 
+                        src="https://www.youtube.com/embed/v_EfnR_GNwk?autoplay=1&mute=1&loop=1&playlist=v_EfnR_GNwk&rel=0" 
                         frameborder="0" allowfullscreen></iframe>
             </div>
             
-            <div class="instruments-grid grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 max-w-7xl mx-auto">
+            <div class="instruments-grid grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 max-w-8xl mx-auto">
                 <!-- MODIS -->
                 <div class="hologram-card p-6 rounded-lg instrument-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="text-center mb-4">
@@ -434,16 +548,16 @@
     
     <!-- SECTION 6 - ENVIRONMENTAL IMPACT -->
     <section id="environmental-impact" class="min-h-screen bg-gradient-to-b from-green-900/20 to-black py-16 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-green-400" data-aos="fade-up">
                 ENVIRONMENTAL IMPACT
             </h2>
             
-            <div class="max-w-7xl mx-auto">
+            <div class="max-w-8xl mx-auto">
                 <!-- Environmental Video -->
-                <div class="environmental-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
+                <div class="environmental-video mb-12 sm:mb-16 max-w-7xl mx-auto" data-aos="fade-up">
                     <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow-green" 
-                            src="https://www.youtube.com/embed/ZSt9tm3RoUU?autoplay=1&mute=1" 
+                            src="https://www.youtube.com/embed/FfgT6zx4k3Q?autoplay=1&mute=1&loop=1&playlist=FfgT6zx4k3Q&rel=0" 
                             frameborder="0" allowfullscreen></iframe>
                 </div>
                 
@@ -542,16 +656,16 @@
     
     <!-- SECTION 7 - HUMAN IMPACT -->
     <section id="human-impact" class="min-h-screen bg-gradient-to-b from-blue-900/20 to-black py-16 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-blue-400" data-aos="fade-up">
                 IMPACT ON HUMANITY
             </h2>
             
-            <div class="max-w-7xl mx-auto">
+            <div class="max-w-8xl mx-auto">
                 <!-- Human Impact Video -->
-                <div class="human-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
+                <div class="human-video mb-12 sm:mb-16 max-w-7xl mx-auto" data-aos="fade-up">
                     <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow" 
-                            src="https://www.youtube.com/embed/yaqd5Sc_BcI?autoplay=1&mute=1" 
+                            src="https://www.youtube.com/embed/ZSt9tm3RoUU?autoplay=1&mute=1&loop=1&playlist=ZSt9tm3RoUU&rel=0" 
                             frameborder="0" allowfullscreen></iframe>
                 </div>
                 
@@ -678,21 +792,244 @@
         </div>
     </section>
     
-    <!-- SECTION 8 - DISCOVERIES / GLOBAL IMPACT DASHBOARD -->
+    <!-- SECTION 8 - SDG 13 CLIMATE ACTION -->
+    <section id="sdg13" class="min-h-screen bg-gradient-to-b from-emerald-900/20 to-black py-16 sm:py-20">
+        <div class="container mx-auto">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-8 sm:mb-12 text-emerald-400" data-aos="fade-up">
+                SDG 13: CLIMATE ACTION
+            </h2>
+            
+            <!-- SDG 13 Logo and Description -->
+            <div class="sdg-intro mb-12 sm:mb-16 max-w-6xl mx-auto text-center" data-aos="fade-up">
+                <div class="sdg-logo-container mb-8">
+                    <div class="sdg-logo w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center">
+                        <span class="text-2xl sm:text-3xl font-bold text-white">13</span>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl lg:text-3xl orbitron font-bold text-emerald-400 mb-4">Take urgent action to combat climate change and its impacts</h3>
+                    <p class="text-base sm:text-lg text-gray-300 max-w-4xl mx-auto">TERRA satellite provides critical data to achieve UN Sustainable Development Goal 13 by monitoring climate patterns, extreme weather events, and environmental changes across the globe.</p>
+                </div>
+            </div>
+            
+            <!-- Climate Action Animation -->
+            <div class="sdg-video mb-12 sm:mb-16 max-w-7xl mx-auto" data-aos="fade-up">
+                <div class="relative h-48 sm:h-64 lg:h-80 rounded-lg glow-green overflow-hidden bg-gradient-to-r from-green-900 to-emerald-900">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4 animate-pulse">🌍</div>
+                            <h3 class="text-2xl font-bold text-emerald-400 orbitron">SDG 13: CLIMATE ACTION</h3>
+                            <p class="text-emerald-300 mt-2">TERRA's Contribution to Global Climate Goals</p>
+                            <div class="flex justify-center space-x-6 mt-4">
+                                <div class="text-center">
+                                    <div class="text-3xl animate-bounce">🎯</div>
+                                    <p class="text-xs text-emerald-200">Target 13.1</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl animate-bounce delay-200">📊</div>
+                                    <p class="text-xs text-emerald-200">Target 13.2</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl animate-bounce delay-400">🔬</div>
+                                    <p class="text-xs text-emerald-200">Target 13.3</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                </div>
+            </div>
+            
+            <!-- SDG 13 Targets and TERRA's Impact -->
+            <div class="sdg-targets grid lg:grid-cols-2 gap-8 sm:gap-12 mb-12 sm:mb-16 max-w-8xl mx-auto">
+                <!-- Climate Data Section -->
+                <div class="climate-data" data-aos="fade-right">
+                    <h3 class="text-2xl sm:text-3xl orbitron font-bold text-emerald-400 mb-6 sm:mb-8">Climate Monitoring Data</h3>
+                    <div class="space-y-4 sm:space-y-6">
+                        <div class="data-item p-4 sm:p-6 cockpit-panel rounded-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="data-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-red-500 flex items-center justify-center text-xl sm:text-2xl">🌡️</div>
+                                <div class="data-value text-right">
+                                    <div class="text-2xl sm:text-3xl font-bold text-red-400">+1.1°C</div>
+                                    <div class="text-xs sm:text-sm text-gray-300">Global temperature rise since 1880</div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-300">TERRA's instruments track global temperature anomalies with unprecedented precision</p>
+                        </div>
+                        
+                        <div class="data-item p-4 sm:p-6 cockpit-panel rounded-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="data-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-500 flex items-center justify-center text-xl sm:text-2xl">🌊</div>
+                                <div class="data-value text-right">
+                                    <div class="text-2xl sm:text-3xl font-bold text-blue-400">3.4mm/year</div>
+                                    <div class="text-xs sm:text-sm text-gray-300">Sea level rise rate</div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-300">Monitoring ice sheet melting and thermal expansion of oceans</p>
+                        </div>
+                        
+                        <div class="data-item p-4 sm:p-6 cockpit-panel rounded-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="data-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-orange-500 flex items-center justify-center text-xl sm:text-2xl">🔥</div>
+                                <div class="data-value text-right">
+                                    <div class="text-2xl sm:text-3xl font-bold text-orange-400">11M hectares</div>
+                                    <div class="text-xs sm:text-sm text-gray-300">Annual forest loss detected</div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-300">Real-time deforestation and wildfire detection worldwide</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- SDG Targets Achievement -->
+                <div class="sdg-achievements" data-aos="fade-left">
+                    <h3 class="text-2xl sm:text-3xl orbitron font-bold text-emerald-400 mb-6 sm:mb-8">SDG 13 Targets Achievement</h3>
+                    <div class="targets-grid space-y-4 sm:space-y-6">
+                        <div class="target-item p-4 sm:p-6 hologram-card rounded-lg">
+                            <div class="target-header flex items-center mb-4">
+                                <div class="target-number w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-500 flex items-center justify-center text-sm sm:text-base font-bold mr-4">13.1</div>
+                                <h4 class="text-base sm:text-lg font-bold text-emerald-400">Climate Resilience</h4>
+                            </div>
+                            <p class="text-sm text-gray-300 mb-3">Strengthen resilience and adaptive capacity to climate-related hazards</p>
+                            <div class="progress-bar bg-gray-700 rounded-full h-2 mb-2">
+                                <div class="progress-fill bg-emerald-500 h-2 rounded-full" style="width: 78%"></div>
+                            </div>
+                            <span class="text-xs text-emerald-400">78% - Early warning systems improved</span>
+                        </div>
+                        
+                        <div class="target-item p-4 sm:p-6 hologram-card rounded-lg">
+                            <div class="target-header flex items-center mb-4">
+                                <div class="target-number w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-500 flex items-center justify-center text-sm sm:text-base font-bold mr-4">13.2</div>
+                                <h4 class="text-base sm:text-lg font-bold text-emerald-400">Climate Policies</h4>
+                            </div>
+                            <p class="text-sm text-gray-300 mb-3">Integrate climate change measures into national policies</p>
+                            <div class="progress-bar bg-gray-700 rounded-full h-2 mb-2">
+                                <div class="progress-fill bg-emerald-500 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                            <span class="text-xs text-emerald-400">65% - Countries using TERRA data for policy</span>
+                        </div>
+                        
+                        <div class="target-item p-4 sm:p-6 hologram-card rounded-lg">
+                            <div class="target-header flex items-center mb-4">
+                                <div class="target-number w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-500 flex items-center justify-center text-sm sm:text-base font-bold mr-4">13.3</div>
+                                <h4 class="text-base sm:text-lg font-bold text-emerald-400">Climate Education</h4>
+                            </div>
+                            <p class="text-sm text-gray-300 mb-3">Improve education and awareness on climate change</p>
+                            <div class="progress-bar bg-gray-700 rounded-full h-2 mb-2">
+                                <div class="progress-fill bg-emerald-500 h-2 rounded-full" style="width: 82%"></div>
+                            </div>
+                            <span class="text-xs text-emerald-400">82% - Educational programs using TERRA data</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Global Impact Statistics -->
+            <div class="global-impact mb-12 sm:mb-16" data-aos="fade-up">
+                <h3 class="text-2xl sm:text-3xl orbitron font-bold text-center mb-8 sm:mb-12 text-emerald-400">Global Climate Action Impact</h3>
+                <div class="impact-stats grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
+                    <div class="stat-card p-4 sm:p-6 cockpit-panel rounded-lg text-center" data-aos="flip-up" data-aos-delay="100">
+                        <div class="stat-icon text-3xl sm:text-4xl mb-3 sm:mb-4">🌍</div>
+                        <div class="stat-number text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-400 mb-2">196</div>
+                        <div class="stat-label text-xs sm:text-sm text-gray-300">Countries using TERRA data</div>
+                    </div>
+                    
+                    <div class="stat-card p-4 sm:p-6 cockpit-panel rounded-lg text-center" data-aos="flip-up" data-aos-delay="200">
+                        <div class="stat-icon text-3xl sm:text-4xl mb-3 sm:mb-4">📊</div>
+                        <div class="stat-number text-xl sm:text-2xl lg:text-3xl font-bold text-blue-400 mb-2">2.8B</div>
+                        <div class="stat-label text-xs sm:text-sm text-gray-300">Data points collected daily</div>
+                    </div>
+                    
+                    <div class="stat-card p-4 sm:p-6 cockpit-panel rounded-lg text-center" data-aos="flip-up" data-aos-delay="300">
+                        <div class="stat-icon text-3xl sm:text-4xl mb-3 sm:mb-4">⚠️</div>
+                        <div class="stat-number text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-400 mb-2">15,000</div>
+                        <div class="stat-label text-xs sm:text-sm text-gray-300">Climate alerts issued annually</div>
+                    </div>
+                    
+                    <div class="stat-card p-4 sm:p-6 cockpit-panel rounded-lg text-center" data-aos="flip-up" data-aos-delay="400">
+                        <div class="stat-icon text-3xl sm:text-4xl mb-3 sm:mb-4">🎯</div>
+                        <div class="stat-number text-xl sm:text-2xl lg:text-3xl font-bold text-green-400 mb-2">89%</div>
+                        <div class="stat-label text-xs sm:text-sm text-gray-300">Prediction accuracy rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Key Climate Achievements -->
+            <div class="climate-achievements" data-aos="fade-up">
+                <h3 class="text-2xl sm:text-3xl orbitron font-bold text-center mb-8 sm:mb-12 text-emerald-400">Key Climate Action Achievements</h3>
+                <div class="achievements-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-8xl mx-auto">
+                    <div class="achievement-card p-4 sm:p-6 hologram-card rounded-lg">
+                        <div class="achievement-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🌿</div>
+                        <h4 class="text-base sm:text-lg font-bold text-green-400 mb-3 text-center">Carbon Cycle Monitoring</h4>
+                        <p class="text-sm text-gray-300 text-center">TERRA tracks global carbon absorption and emission patterns, helping countries meet Paris Agreement targets.</p>
+                        <div class="achievement-stat mt-4 text-center">
+                            <span class="text-lg sm:text-xl font-bold text-green-400">2.1 GtC/year</span>
+                            <span class="text-xs block text-gray-400">Carbon flux monitored</span>
+                        </div>
+                    </div>
+                    
+                    <div class="achievement-card p-4 sm:p-6 hologram-card rounded-lg">
+                        <div class="achievement-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🌀</div>
+                        <h4 class="text-base sm:text-lg font-bold text-blue-400 mb-3 text-center">Extreme Weather Prediction</h4>
+                        <p class="text-sm text-gray-300 text-center">Advanced warning systems for hurricanes, droughts, and heatwaves, reducing climate disaster impacts.</p>
+                        <div class="achievement-stat mt-4 text-center">
+                            <span class="text-lg sm:text-xl font-bold text-blue-400">72 hours</span>
+                            <span class="text-xs block text-gray-400">Early warning lead time</span>
+                        </div>
+                    </div>
+                    
+                    <div class="achievement-card p-4 sm:p-6 hologram-card rounded-lg sm:col-span-2 lg:col-span-1">
+                        <div class="achievement-icon w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-purple-500 mx-auto mb-4 flex items-center justify-center text-xl sm:text-2xl">🔬</div>
+                        <h4 class="text-base sm:text-lg font-bold text-purple-400 mb-3 text-center">Climate Research Support</h4>
+                        <p class="text-sm text-gray-300 text-center">Supporting 1,200+ research institutions worldwide with critical climate data for scientific advancement.</p>
+                        <div class="achievement-stat mt-4 text-center">
+                            <span class="text-lg sm:text-xl font-bold text-purple-400">25,000+</span>
+                            <span class="text-xs block text-gray-400">Scientific papers published</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 9 - DISCOVERIES / GLOBAL IMPACT DASHBOARD -->
     <section id="discoveries" class="min-h-screen bg-gradient-to-b from-cyan-900/20 to-black py-16 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold text-center mb-12 sm:mb-16 text-cyan-400" data-aos="fade-up">
                 GLOBAL IMPACT DASHBOARD
             </h2>
             
-            <!-- Discovery Video -->
-            <div class="discovery-video mb-12 sm:mb-16 max-w-6xl mx-auto" data-aos="fade-up">
-                <iframe class="w-full h-48 sm:h-64 lg:h-80 rounded-lg glow" 
-                        src="https://www.youtube.com/embed/zlhiP-BI_7o?autoplay=1&mute=1" 
-                        frameborder="0" allowfullscreen></iframe>
+            <!-- Global Impact Animation -->
+            <div class="discovery-video mb-12 sm:mb-16 max-w-7xl mx-auto" data-aos="fade-up">
+                <div class="relative h-48 sm:h-64 lg:h-80 rounded-lg glow overflow-hidden bg-gradient-to-r from-blue-900 to-cyan-900">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4 animate-spin">🌐</div>
+                            <h3 class="text-2xl font-bold text-cyan-400 orbitron">GLOBAL IMPACT DASHBOARD</h3>
+                            <p class="text-cyan-300 mt-2">25+ Years of Earth Science Discoveries</p>
+                            <div class="grid grid-cols-4 gap-4 mt-4 max-w-md mx-auto">
+                                <div class="text-center animate-pulse">
+                                    <div class="text-2xl">🌳</div>
+                                    <p class="text-xs text-cyan-200">Forests</p>
+                                </div>
+                                <div class="text-center animate-pulse delay-100">
+                                    <div class="text-2xl">🌊</div>
+                                    <p class="text-xs text-cyan-200">Oceans</p>
+                                </div>
+                                <div class="text-center animate-pulse delay-200">
+                                    <div class="text-2xl">☁️</div>
+                                    <p class="text-xs text-cyan-200">Clouds</p>
+                                </div>
+                                <div class="text-center animate-pulse delay-300">
+                                    <div class="text-2xl">🏜️</div>
+                                    <p class="text-xs text-cyan-200">Land</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute top-2 right-2 w-3 h-3 bg-cyan-500 rounded-full animate-ping"></div>
+                </div>
             </div>
             
-            <div class="discoveries-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
+            <div class="discoveries-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-8xl mx-auto">
                 <div class="discovery-tile cockpit-panel p-6 rounded-lg" data-aos="flip-left" data-aos-delay="100">
                     <div class="text-center">
                         <div class="discovery-icon text-4xl mb-4">🌳</div>
@@ -744,14 +1081,14 @@
         </div>
     </section>
     
-    <!-- SECTION 9 - TODAY & BEYOND -->
+    <!-- SECTION 10 - TODAY & BEYOND -->
     <section id="legacy" class="min-h-screen bg-gradient-to-b from-green-900/20 to-black py-16 sm:py-20 relative">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="container mx-auto text-center">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl orbitron font-bold mb-12 sm:mb-16 text-green-400" data-aos="fade-up">
                 MISSION CONTINUES
             </h2>
             
-            <div class="max-w-6xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+            <div class="max-w-7xl mx-auto" data-aos="fade-up" data-aos-delay="200">
                 <p class="text-2xl sm:text-3xl mb-6 sm:mb-8">
                     I was designed to last <span class="text-yellow-400 orbitron">6 years</span>.
                 </p>
@@ -771,14 +1108,7 @@
                     </p>
                 </div>
                 
-                <div class="action-buttons flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
-                    <button class="bg-cyan-500 hover:bg-cyan-400 px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl orbitron font-bold transition-all duration-300 glow">
-                        Watch Live TERRA Data
-                    </button>
-                    <button class="bg-green-500 hover:bg-green-400 px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl orbitron font-bold transition-all duration-300 glow-green">
-                        Join the Mission: Protect Earth
-                    </button>
-                </div>
+                
             </div>
         </div>
     </section>
@@ -999,14 +1329,6 @@
         
         // Navigation functionality
         function initializeNavigation() {
-            // Mobile menu toggle
-            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-            const mobileMenu = document.querySelector('.mobile-menu');
-            
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
             // Smooth scrolling for navigation links
             const navLinks = document.querySelectorAll('.nav-link');
             
@@ -1023,9 +1345,6 @@
                         },
                         ease: "power2.inOut"
                     });
-                    
-                    // Close mobile menu if open
-                    mobileMenu.classList.add('hidden');
                 });
             });
             
@@ -1137,14 +1456,75 @@
             });
         }
         
-        // Success stories animation
-        function animateSuccessStories() {
-            const storyCards = document.querySelectorAll('.story-card');
+        // SDG 13 progress bars animation
+        function animateSDGProgress() {
+            const progressBars = document.querySelectorAll('.progress-fill');
             
-            storyCards.forEach(card => {
+            ScrollTrigger.create({
+                trigger: "#sdg13",
+                start: "top center",
+                onEnter: () => {
+                    progressBars.forEach((bar, index) => {
+                        const width = bar.style.width;
+                        bar.style.width = '0%';
+                        
+                        gsap.to(bar, {
+                            width: width,
+                            duration: 2,
+                            delay: index * 0.3,
+                            ease: "power2.out"
+                        });
+                    });
+                }
+            });
+        }
+        
+        // SDG statistics counter animation
+        function animateSDGStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            ScrollTrigger.create({
+                trigger: ".impact-stats",
+                start: "top center",
+                onEnter: () => {
+                    statNumbers.forEach((stat, index) => {
+                        const text = stat.textContent;
+                        const isNumber = !isNaN(parseFloat(text));
+                        
+                        if (isNumber) {
+                            const finalValue = parseFloat(text);
+                            gsap.fromTo({value: 0}, {
+                                value: finalValue,
+                                duration: 2,
+                                delay: index * 0.2,
+                                ease: "power2.out",
+                                onUpdate: function() {
+                                    if (text.includes('B')) {
+                                        stat.textContent = (this.targets()[0].value).toFixed(1) + 'B';
+                                    } else if (text.includes('%')) {
+                                        stat.textContent = Math.floor(this.targets()[0].value) + '%';
+                                    } else if (text.includes(',')) {
+                                        stat.textContent = Math.floor(this.targets()[0].value).toLocaleString();
+                                    } else {
+                                        stat.textContent = Math.floor(this.targets()[0].value);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Achievement cards hover animation
+        function animateAchievementCards() {
+            const achievementCards = document.querySelectorAll('.achievement-card');
+            
+            achievementCards.forEach(card => {
                 card.addEventListener('mouseenter', () => {
                     gsap.to(card, {
                         scale: 1.02,
+                        y: -5,
                         duration: 0.3,
                         ease: "power2.out"
                     });
@@ -1153,8 +1533,113 @@
                 card.addEventListener('mouseleave', () => {
                     gsap.to(card, {
                         scale: 1,
+                        y: 0,
                         duration: 0.3,
                         ease: "power2.out"
+                    });
+                });
+            });
+        }
+        
+        // Data items pulsing animation
+        function animateDataItems() {
+            const dataItems = document.querySelectorAll('.data-item');
+            
+            dataItems.forEach((item, index) => {
+                gsap.to(item, {
+                    boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
+                    duration: 3,
+                    repeat: -1,
+                    yoyo: true,
+                    delay: index * 0.5,
+                    ease: "power2.inOut"
+                });
+            });
+        }
+        
+        // Enhanced responsive navigation
+        function enhanceNavigation() {
+            const nav = document.querySelector('nav');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Auto-hide navigation on scroll down, show on scroll up
+            let lastScrollY = window.scrollY;
+            
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.scrollY;
+                
+                if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                    // Scrolling down
+                    gsap.to(nav, {
+                        y: -100,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                } else {
+                    // Scrolling up
+                    gsap.to(nav, {
+                        y: 0,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                }
+                
+                lastScrollY = currentScrollY;
+            });
+            
+            // Enhanced mobile menu
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const hamburgerIcon = document.querySelector('.hamburger-icon');
+            const closeIcon = document.querySelector('.close-icon');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            // Toggle mobile menu
+            mobileMenuBtn.addEventListener('click', () => {
+                const isHidden = mobileMenu.classList.contains('hidden');
+                
+                if (isHidden) {
+                    // Open menu
+                    mobileMenu.classList.remove('hidden');
+                    hamburgerIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden'; // Prevent scroll
+                    
+                    gsap.fromTo(mobileMenu, 
+                        { opacity: 0 },
+                        { opacity: 1, duration: 0.3, ease: "power2.out" }
+                    );
+                } else {
+                    // Close menu
+                    hamburgerIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                    document.body.style.overflow = ''; // Restore scroll
+                    
+                    gsap.to(mobileMenu, {
+                        opacity: 0,
+                        duration: 0.3,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+            
+            // Close menu when clicking on a link
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburgerIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                    document.body.style.overflow = '';
+                    
+                    gsap.to(mobileMenu, {
+                        opacity: 0,
+                        duration: 0.3,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            mobileMenu.classList.add('hidden');
+                        }
                     });
                 });
             });
@@ -1176,13 +1661,22 @@
             animateEnvironmentalStats();
             animateBenefitCards();
             animateAlertCards();
-            animateSuccessStories();
+            animateSDGProgress();
+            animateSDGStats();
+            animateAchievementCards();
+            animateDataItems();
+            enhanceNavigation();
             
             // Trigger countdown when launch section is visible
             ScrollTrigger.create({
                 trigger: "#launch",
                 start: "top center",
                 onEnter: animateCountdown
+            });
+            
+            // Enhanced responsive behavior
+            window.addEventListener('resize', () => {
+                ScrollTrigger.refresh();
             });
         });
     </script>
